@@ -1,7 +1,6 @@
 library(e1071)
 library(readxl)
 
-library(hydroGOF)
 # Enter your file path here
 data<- read_excel("D:/R-files/Project/Student_Grade_Predictor/student_dataset.xlsx")
 str(data)
@@ -16,7 +15,9 @@ str(test_data)
 
 dsp_attendance <- data["dsp_attendance"]
 dsp_marks <- data["dsp_marks"]
+
 test_dsp_data <- test_data["dsp_attendance"]
+test_dsp_data
 
 model<- svm(dsp_marks ~ dsp_attendance, data=data[1:34,],cost=64,epsilon=1)
 
@@ -62,7 +63,9 @@ css_attendance <- data["css_attendance"]
 css_attendance
 
 css_marks <- data["css_marks"]
+
 test_css_data <- test_data["css_attendance"]
+test_css_data
 
 model<- svm(css_marks ~ css_attendance, data=data[1:34,],cost=64,epsilon=1)
 
@@ -72,7 +75,6 @@ tune_css_marks <- tune(svm, css_marks ~ css_attendance,  data = data[1:34,],
 )
 
 print(tune_css_marks)
-
 
 # Draw the tuning graph
 plot(tune_css_marks)
@@ -171,7 +173,6 @@ tune_ip_marks <- tune(svm, ip_marks ~ ip_attendance,  data = data[1:34,],
 )
 
 print(tune_ip_marks)
-
 
 # Draw the tuning graph
 plot(tune_ip_marks)
