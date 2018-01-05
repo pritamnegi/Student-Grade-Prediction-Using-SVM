@@ -1,93 +1,105 @@
 library(e1071)
 library(readxl)
 
+library(hydroGOF)
 # Enter your file path here
 data<- read_excel("D:/R-files/Project/Student_Grade_Predictor/student_dataset.xlsx")
 str(data)
+head(data)
+
+
+test_data <- read_excel("D:/R-files/Project/Student_Grade_Predictor/test_dataset.xlsx")
+str(test_data)
 
 
                                 ## Model for prediction of DSP Marks ##
 
+dsp_attendance <- data["dsp_attendance"]
+dsp_marks <- data["dsp_marks"]
+test_dsp_data <- test_data["dsp_attendance"]
 
-model<- svm(data$dsp_marks ~ data$dsp_attendance, data)
-
-predicted_dsp_marks <- predict(model, data)
-
-plot(data$dsp_attendance, predicted_dsp_marks, col = "red", pch=4)
-
-error_dsp_marks <- data$dsp_marks - predicted_dsp_marks
-
-error_dsp_marks
+model<- svm(dsp_marks ~ dsp_attendance, data=data[1:34,],cost=64,epsilon=1)
 
 
-
-# perform a grid search
-tune_dsp_marks <- tune(svm, data$dsp_marks ~ data$dsp_attendance,  data = data,
-                   ranges = list(epsilon = seq(0,1,0.1), cost = 2^(2:9))
+tune_dsp_marks <- tune(svm, dsp_marks ~ dsp_attendance,  data = data[1:34,],
+                       ranges = list(epsilon = seq(0,1,0.1), cost = 2^(2:9))
 )
+
 print(tune_dsp_marks)
+
+
 # Draw the tuning graph
 plot(tune_dsp_marks)
 
-
-tune_dsp_marks <- tune(svm, data$dsp_marks ~ data$dsp_attendance,  data = data,
-                   ranges = list(epsilon = seq(0.4,0.8,0.01), cost = 2^(2:9))
+tune_dsp_marks <- tune(svm, dsp_marks ~ dsp_attendance,  data = data[1:34,],
+                       ranges = list(epsilon = seq(0.6,1,0.01), cost = 2^(2:9))
 ) 
 
 print(tune_dsp_marks)
 plot(tune_dsp_marks)
 
-
-tuned_dsp_marks_model <- tune_dsp_marks$best.model
-tuned_dsp_marks <- predict(tuned_dsp_marks_model, data) 
-
-tuned_dsp_marks
-
-error <- data$dsp_marks - tuned_dsp_marks  
+model <- tune_dsp_marks$best.model
 
 
+predict1<-predict(model,newdata=data[35:49,])
 
+predict1
+
+error<- dsp_marks[35:49,] - predict1
+
+
+error_rmse <- sqrt(mean(error^2))
+error_rmse
+
+predict2<-predict(model,newdata=test_dsp_data[1:6,])
+
+predict2
 
                                 ## Model for prediction of CSS Marks ##
 
 
-model<- svm(data$css_marks ~ data$css_attendance, data)
+css_attendance <- data["css_attendance"]
+css_attendance
 
-predicted_css_marks <- predict(model, data)
+css_marks <- data["css_marks"]
+test_css_data <- test_data["css_attendance"]
 
-plot(data$css_attendance, predicted_css_marks, col = "red", pch=4)
-
-error_css_marks <- data$css_marks - predicted_css_marks
-
-error_css_marks
+model<- svm(css_marks ~ css_attendance, data=data[1:34,],cost=64,epsilon=1)
 
 
-
-# perform a grid search
-tune_css_marks <- tune(svm, data$css_marks ~ data$css_attendance,  data = data,
+tune_css_marks <- tune(svm, css_marks ~ css_attendance,  data = data[1:34,],
                        ranges = list(epsilon = seq(0,1,0.1), cost = 2^(2:9))
 )
+
 print(tune_css_marks)
+
 
 # Draw the tuning graph
 plot(tune_css_marks)
 
-
-tune_css_marks <- tune(svm, data$css_marks ~ data$css_attendance,  data = data,
-                       ranges = list(epsilon = seq(0,0.4,0.01), cost = 2^(2:9))
+tune_css_marks <- tune(svm, css_marks ~ css_attendance,  data = data[1:34,],
+                       ranges = list(epsilon = seq(0.6,0.8,0.01), cost = 2^(2:9))
 ) 
 
 print(tune_css_marks)
 plot(tune_css_marks)
 
+model <- tune_css_marks$best.model
 
-tuned_css_marks_model <- tune_css_marks$best.model
-tuned_css_marks <- predict(tuned_css_marks_model, data) 
 
-tuned_css_marks
+predict1<-predict(model,newdata=data[35:49,])
 
-error <- data$css_marks - tuned_css_marks  
+predict1
 
+error<- css_marks[35:49,] - predict1
+
+
+error_rmse <- sqrt(mean(error^2))
+error_rmse
+
+predict2<-predict(model,newdata=test_css_data[1:6,])
+
+predict2
 
 
 
@@ -95,85 +107,95 @@ error <- data$css_marks - tuned_css_marks
 
 
 
-model<- svm(data$ai_marks ~ data$ai_attendance, data)
+ai_attendance <- data["ai_attendance"]
+ai_attendance
 
-predicted_ai_marks <- predict(model, data)
+ai_marks <- data["ai_marks"]
+test_ai_data <- test_data["ai_attendance"]
+test_ai_data
 
-plot(data$ai_attendance, predicted_ai_marks, col = "red", pch=4)
-
-error_ai_marks <- data$ai_marks - predicted_ai_marks
-
-error_ai_marks
-
+model<- svm(ai_marks ~ ai_attendance, data=data[1:34,],cost=64,epsilon=1)
 
 
-# perform a grid search
-tune_ai_marks <- tune(svm, data$ai_marks ~ data$ai_attendance,  data = data,
+tune_ai_marks <- tune(svm, ai_marks ~ ai_attendance,  data = data[1:34,],
                        ranges = list(epsilon = seq(0,1,0.1), cost = 2^(2:9))
 )
+
 print(tune_ai_marks)
+
 
 # Draw the tuning graph
 plot(tune_ai_marks)
 
-
-tune_ai_marks <- tune(svm, data$ai_marks ~ data$ai_attendance,  data = data,
-                       ranges = list(epsilon = seq(0.4,0.6,0.01), cost = 2^(2:9))
+tune_ai_marks <- tune(svm, ai_marks ~ ai_attendance,  data = data[1:34,],
+                       ranges = list(epsilon = seq(0.4,1,0.01), cost = 2^(2:9))
 ) 
 
 print(tune_ai_marks)
 plot(tune_ai_marks)
 
+model <- tune_ai_marks$best.model
 
-tuned_ai_marks_model <- tune_ai_marks$best.model
-tuned_ai_marks <- predict(tuned_ai_marks_model, data) 
 
-tuned_ai_marks
+predict1<-predict(model,newdata=data[35:49,])
 
-error <- data$ai_marks - tuned_ai_marks  
+predict1
 
+error<- ai_marks[35:49,] - predict1
+
+
+error_rmse <- sqrt(mean(error^2))
+error_rmse
+
+predict2<-predict(model,newdata=test_ai_data[1:6,])
+
+predict2
 
 
                               ## Model for prediction of IP marks
 
 
 
-model<- svm(data$ip_marks ~ data$ip_attendance, data)
+ip_attendance <- data["ip_attendance"]
+ip_attendance
 
-predicted_ip_marks <- predict(model, data)
+ip_marks <- data["ip_marks"]
+test_ip_data <- test_data["ip_attendance"]
+test_ip_data
 
-plot(data$ip_attendance, predicted_ip_marks, col = "red", pch=4)
-
-error_ip_marks <- data$ip_marks - predicted_ip_marks
-
-error_ip_marks
-
+model<- svm(ip_marks ~ ip_attendance, data=data[1:34,],cost=64,epsilon=1)
 
 
-# perform a grid search
-tune_ip_marks <- tune(svm, data$ip_attendance, predicted_ip_marks,  data = data,
+tune_ip_marks <- tune(svm, ip_marks ~ ip_attendance,  data = data[1:34,],
                       ranges = list(epsilon = seq(0,1,0.1), cost = 2^(2:9))
 )
+
 print(tune_ip_marks)
+
 
 # Draw the tuning graph
 plot(tune_ip_marks)
 
-
-tune_ip_marks <- tune(svm, data$ip_marks ~ data$ip_attendance,  data = data,
-                      ranges = list(epsilon = seq(0,0.2,0.01), cost = 2^(2:9))
+tune_ip_marks <- tune(svm, ip_marks ~ ip_attendance,  data = data[1:34,],
+                      ranges = list(epsilon = seq(0.8,1,0.01), cost = 2^(2:9))
 ) 
 
 print(tune_ip_marks)
 plot(tune_ip_marks)
 
-
-tuned_ip_marks_model <- tune_ip_marks$best.model
-tuned_ip_marks <- predict(tuned_ip_marks_model, data) 
-
-tuned_ip_marks
-
-error <- data$ip_marks - tuned_ip_marks  
+model <- tune_ip_marks$best.model
 
 
+predict1<-predict(model,newdata=data[35:49,])
 
+predict1
+
+error<- ip_marks[35:49,] - predict1
+
+
+error_rmse <- sqrt(mean(error^2))
+error_rmse
+
+predict2<-predict(model,newdata=test_ip_data[1:6,])
+
+predict2
