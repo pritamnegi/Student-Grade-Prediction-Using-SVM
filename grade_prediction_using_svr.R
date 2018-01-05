@@ -42,11 +42,11 @@ plot(tune_dsp_marks)
 model <- tune_dsp_marks$best.model
 
 
-predict1<-predict(model,newdata=data[35:49,])
+predict1<-predict(model,newdata=data[35:48,])
 
 predict1
 
-error<- dsp_marks[35:49,] - predict1
+error<- dsp_marks[35:48,] - predict1
 
 
 error_rmse <- sqrt(mean(error^2))
@@ -80,7 +80,7 @@ print(tune_css_marks)
 plot(tune_css_marks)
 
 tune_css_marks <- tune(svm, css_marks ~ css_attendance,  data = data[1:34,],
-                       ranges = list(epsilon = seq(0.6,0.8,0.01), cost = 2^(2:9))
+                       ranges = list(epsilon = seq(0.8,1,0.01), cost = 2^(2:9))
 ) 
 
 print(tune_css_marks)
@@ -89,11 +89,11 @@ plot(tune_css_marks)
 model <- tune_css_marks$best.model
 
 
-predict1<-predict(model,newdata=data[35:49,])
+predict1<-predict(model,newdata=data[35:48,])
 
 predict1
 
-error<- css_marks[35:49,] - predict1
+error<- css_marks[35:48,] - predict1
 
 
 error_rmse <- sqrt(mean(error^2))
@@ -139,11 +139,11 @@ plot(tune_ai_marks)
 model <- tune_ai_marks$best.model
 
 
-predict1<-predict(model,newdata=data[35:49,])
+predict1<-predict(model,newdata=data[35:48,])
 
 predict1
 
-error<- ai_marks[35:49,] - predict1
+error<- ai_marks[35:48,] - predict1
 
 
 error_rmse <- sqrt(mean(error^2))
@@ -187,11 +187,11 @@ plot(tune_ip_marks)
 model <- tune_ip_marks$best.model
 
 
-predict1<-predict(model,newdata=data[35:49,])
+predict1<-predict(model,newdata=data[35:48,])
 
 predict1
 
-error<- ip_marks[35:49,] - predict1
+error<- ip_marks[35:48,] - predict1
 
 
 error_rmse <- sqrt(mean(error^2))
